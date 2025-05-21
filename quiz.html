@@ -1,0 +1,117 @@
+<!DOCTYPE html><html lang="de">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Harry & Ida Quiz</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');body { margin: 0; padding: 0; font-family: 'Poppins', sans-serif; height: 100vh; overflow: hidden; background: linear-gradient(-45deg, #00f0e0, #00c8c8, #008b8b, #004f4f); background-size: 400% 400%; animation: gradientBG 15s ease infinite; display: flex; justify-content: center; align-items: center; color: #e0ffff; }
+
+@keyframes gradientBG { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+
+.quiz-box { background: rgba(255,255,255,0.15); border-radius: 30px; box-shadow: 0 4px 30px rgba(0, 255, 255, 0.3), inset 0 0 15px rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); border: 1px solid rgba(0, 255, 255, 0.3); padding: 40px 35px; width: 90%; max-width: 520px; text-align: center; position: relative; animation: popIn 1s ease forwards; }
+
+@keyframes popIn { from {opacity: 0; transform: scale(0.85);} to {opacity: 1; transform: scale(1);} }
+
+h2 { font-size: 28px; margin-bottom: 25px; text-shadow: 0 0 5px #00ffff, 0 0 10px #00e5e5, 0 0 15px #00c8c8; }
+
+.highlight { color: #30d5c8; font-weight: 700; text-shadow: 0 0 10px #30d5c8; }
+
+.answers { display: flex; flex-wrap: wrap; justify-content: center; gap: 15px; }
+
+button { flex: 1 1 40%; min-width: 120px; background: linear-gradient(135deg, #00e0d0, #008b8b); border: none; border-radius: 20px; padding: 15px 20px; font-weight: 600; font-size: 16px; color: #d0ffff; cursor: pointer; box-shadow: 0 0 15px #00ffff, 0 0 30px #00a6a6 inset; transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease; position: relative; overflow: hidden; }
+
+button::before { content: ""; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.25) 0%, transparent 60%); transform: translateX(-100%) rotate(45deg); transition: transform 0.5s ease; pointer-events: none; }
+
+button:hover::before { transform: translateX(150%) rotate(45deg); }
+
+button:hover { background: linear-gradient(135deg, #00ffff, #00c0c0); box-shadow: 0 0 20px #00ffff, 0 0 40px #00d0d0 inset; transform: scale(1.1) translateY(-5px); z-index: 2; }
+
+.answers.final button { flex: 1 1 45%; font-size: 18px; font-weight: 700; padding: 18px 25px; }
+
+.fade-out { animation: fadeOut 0.4s forwards; }
+
+.fade-in { animation: fadeIn 0.5s forwards; }
+
+@keyframes fadeOut { from {opacity: 1; transform: translateY(0);} to {opacity: 0; transform: translateY(20px);} }
+
+@keyframes fadeIn { from {opacity: 0; transform: translateY(-20px);} to {opacity: 1; transform: translateY(0);} }
+
+.doggo { display: inline-block; margin-left: 8px; font-size: 24px; animation: bounce 1.2s infinite alternate; color: #30d5c8; }
+
+@keyframes bounce { 0% {transform: translateY(0);} 100% {transform: translateY(-6px);} } </style>
+
+</head>
+<body>
+  <div class="quiz-box" id="quizBox">
+    <h2 id="question">Lade Frage...</h2>
+    <div class="answers" id="answers"></div>
+  </div><script>
+const questions = [
+  { text: "Willkommen zum ultimativen Harry-Fan-Quiz!", answers: ["Los geht’s!", "Bin bereit!"] },
+  { text: "Wie sehr liebst du deinen Hund Harry?", answers: ["Mehr als alles!", "Sehr viel", "Schon sehr", "Er ist okay", "Ein bisschen", "Gar nicht"] },
+  { text: "Was würde Harry <span class='doggo'>🐶</span> jetzt gerade tun?", answers: ["Schlafen", "Essen", "Spielen", "Gassi wollen", "Kuscheln", "Bellen"] },
+  { text: "Was passt besser zu dir?", answers: ["Lustig", "Schüchtern", "Sportlich", "Kreativ", "Mutig", "Tiefgründig"] },
+  { text: "Welche Farbe findest du bei Türkis am coolsten?", answers: ["Hellblau", "Mint", "Petrol", "Meergrün", "Pastell", "Alle"] },
+  { text: "Wenn Harry sprechen könnte, was würde er sagen?", answers: ["Ich hab dich lieb!", "Futter bitte!", "Lass uns spielen!", "Ich will raus!", "Gib Keks!", "Komm kuscheln"] },
+  { text: "Was machst du am liebsten an einem Samstag?", answers: ["Mit Harry chillen", "Musik hören", "Zocken", "Schlafen", "Freunde treffen", "Serien gucken"] },
+  { text: "Okay, jetzt wird's spannend...", answers: ["Ohhh", "Bin gespannt"] },
+  { text: "Hey <span class='highlight' style='font-size:1.5em; font-weight:900; text-transform: uppercase;'>Ida</span>, darf ich dir eine <strong>wichtige Frage</strong> stellen?", answers: ["Ja klar!", "Na gut..."] },
+  { text: "Willst du mit mir zusammen sein?", answers: ["Ja, gerne!", "Nee, sorry..."] }
+];
+
+let current = 0;
+const questionEl = document.getElementById("question");
+const answersEl = document.getElementById("answers");
+
+function loadQuestion() {
+  questionEl.classList.add('fade-out');
+  answersEl.classList.add('fade-out');
+  setTimeout(() => {
+    const q = questions[current];
+    questionEl.innerHTML = q.text;
+    answersEl.innerHTML = '';
+
+    if(current === questions.length - 1) {
+      answersEl.classList.add('final');
+    } else {
+      answersEl.classList.remove('final');
+    }
+
+    q.answers.forEach(answer => {
+      const btn = document.createElement('button');
+      btn.textContent = answer;
+      btn.onclick = () => {
+        if(current === questions.length - 1) {
+          showResult(answer);
+        } else {
+          current++;
+          loadQuestion();
+        }
+      };
+      answersEl.appendChild(btn);
+    });
+
+    questionEl.classList.remove('fade-out');
+    questionEl.classList.add('fade-in');
+    answersEl.classList.remove('fade-out');
+    answersEl.classList.add('fade-in');
+  }, 450);
+}
+
+function showResult(answer) {
+  questionEl.classList.add('fade-out');
+  answersEl.classList.add('fade-out');
+  setTimeout(() => {
+    if(answer === "Ja, gerne!") {
+      document.getElementById('quizBox').innerHTML =
+        <h2 style="text-shadow: 0 0 8px #00ffff, 0 0 15px #00f0f0;">Yesss, <span class='highlight'>Ida</span>! Ich freu mich mega! Harry <span class='doggo'>🐶</span> auch!</h2>;
+    } else {
+      document.getElementById('quizBox').innerHTML =
+        <h2 style="text-shadow: 0 0 8px #00ffff, 0 0 15px #00f0f0;">Alles gut, <span class='highlight'>Ida</span> – danke, dass du ehrlich bist!</h2>;
+    }
+  }, 450);
+}
+
+loadQuestion();
+</script></body>
+</html>
