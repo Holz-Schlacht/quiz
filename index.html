@@ -144,7 +144,7 @@
       },
       {
         text: "dann will ich dich fragen ob du mit mir zusammen sein möchtest?",
-        answers: ["Ja, gerne!", "Nee, sorry..."],
+        answers: ["Jaaaaaa <3", "Nee, sorry..."],
         special: true
       }
     ];
@@ -180,7 +180,13 @@
               loadQuestion(); // Frage wiederholen
             } else {
               current++;
-              loadQuestion();
+              if(current < questions.length) {
+                loadQuestion();
+              } else {
+                // Quiz Ende, kann hier optional etwas anzeigen
+                questionEl.innerHTML = "Danke fürs Mitmachen!";
+                answersEl.innerHTML = "";
+              }
             }
           };
 
@@ -198,9 +204,9 @@
       questionEl.classList.add('fade-out');
       answersEl.classList.add('fade-out');
       setTimeout(() => {
-        if (answer === "jaaa") {
+        if (answer === "Jaaaaaa <3") {
           document.getElementById('quizBox').innerHTML =
-            "<h2 style='text-shadow: 0 0 8px #00ffff, 0 0 15px #00f0f0;, <span class='highlight'>Idaaa</span> I Loveee youuu <333</h2>";
+            "<h2 style='text-shadow: 0 0 8px #00ffff, 0 0 15px #00f0f0;'><span class='highlight'>Idaaa</span> I Loveee youuu &lt;3</h2>";
         } else {
           document.getElementById('quizBox').innerHTML =
             "<h2 style='text-shadow: 0 0 8px #00ffff, 0 0 15px #00f0f0;'>Alles gut, <span class='highlight'>Ida</span> – danke, dass du ehrlich bist!</h2>";
